@@ -7,7 +7,7 @@ var React = require('react'),
 
 var Calc = React.createClass({
   mixins: [LinkedStateMixin],
-  
+
   getInitialState: function () {
     return {
       rates: ExchangeStore.all(), amount: 0
@@ -15,11 +15,14 @@ var Calc = React.createClass({
   },
 
   componentDidMount: function () {
-    debugger
     ApiUtil.fetchLocalRates();
+    var rates = ExchangeStore.all();
 
+    if ( typeof rates["usd"] === "undefined" ) {
+      ApiUtil.fetchRates();
+    }
+    
     // If rates are old, fetch new ones
-    // ApiUtil.fetchRates();
     this.storeListener = ExchangeStore.addListener(this.onChange);
   },
 
