@@ -12,7 +12,7 @@ var Calc = React.createClass({
 
   getInitialState: function () {
     return {
-      rates: ExchangeStore.all(), amount: 0, from: "BTC", to: "BTC"
+      rates: ExchangeStore.all(), amount: "", from: "BTC", to: "BTC"
     };
   },
 
@@ -70,6 +70,8 @@ var Calc = React.createClass({
         amount = parseFloat(this.state.amount),
         fromRate = 1, toRate = 1, value;
 
+    if (this.state.amount === "") amount = 0;
+
     // Iterate through each rate we have and set the local variables toRate and fromRate accordingly.
     this.state.rates.forEach(function(rate) {
       var currency = rate.currency;
@@ -82,7 +84,7 @@ var Calc = React.createClass({
 
     // If to and from are equivalent, just return the original amount because no conversion is necessary.
     if (fromCur === toCur) {
-      return this.setState({value: amount, type: toCur});
+      return this.setState({value: amount.toFixed(2), type: toCur});
     }
 
     // I have to do this check because of the BTC API I used and because putting such a small fraction in the database with a precision constraint of 2 did not work well.
@@ -96,7 +98,7 @@ var Calc = React.createClass({
 
     // This is the meat of the entire function. Every exchange rate is in respect to USD, so we need to essentially convert it to USD using the first half of the equation, and then convert it into the desired 'to' currency.
     var value = (amount * (1 / fromRate )) * (toRate);
-    this.setState({value: value, type: toCur});
+    this.setState({value: value.toFixed(2), type: toCur});
 
   },
 
@@ -174,6 +176,7 @@ var Calc = React.createClass({
                 <label className="">Amount to Convert</label>
                 <input
                   type="text"
+                  placeholder="Enter amount"
                   valueLink={this.linkState('amount')} />
               </div>
             </div>
