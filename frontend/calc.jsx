@@ -69,6 +69,7 @@ var Calc = React.createClass({
         amount = parseFloat(this.state.amount),
         fromRate = 1, toRate = 1, value;
 
+    // No NaNs on my watch!
     if (this.state.amount === "") amount = 0;
 
     // Iterate through each rate we have and set the local variables toRate and fromRate accordingly.
@@ -81,7 +82,7 @@ var Calc = React.createClass({
       }
     });
 
-    // If to and from are equivalent, just return the original amount because no conversion is necessary.
+    // If 'to' and 'from' are equivalent, just return the original amount because no conversion is necessary.
     if (fromCur === toCur) {
       return this.setState({value: amount.toFixed(2), type: toCur});
     }
@@ -99,14 +100,6 @@ var Calc = React.createClass({
     var value = (amount * (1 / fromRate )) * (toRate);
     this.setState({value: value.toFixed(2), type: toCur});
 
-  },
-
-  switchSelected: function (e) {
-    e.preventDefault();
-    var fromCur = this.state.from,
-        toCur = this.state.to;
-
-    this.setState({to: fromCur, from: toCur});
   },
 
   currencyType: function () {
@@ -186,8 +179,6 @@ var Calc = React.createClass({
       </div>
     );
   }
-
-
 });
 
 
@@ -195,5 +186,3 @@ window.init = function () {
   var root = document.getElementById('root');
   ReactDOM.render(<Calc/>, root);
 };
-
-// <button onClick={this.switchSelected}>Switch</button>
