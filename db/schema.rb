@@ -11,12 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160227205221) do
+ActiveRecord::Schema.define(version: 20160228000642) do
 
   create_table "exchange_rates", force: :cascade do |t|
-    t.datetime "date",                             null: false
-    t.decimal  "rate",     precision: 8, scale: 2, null: false
-    t.string   "currency",                         null: false
+    t.datetime "date",                               null: false
+    t.decimal  "rate",       precision: 8, scale: 2, null: false
+    t.string   "currency",                           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "exchange_rates", ["currency"], name: "index_exchange_rates_on_currency"

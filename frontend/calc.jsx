@@ -6,47 +6,145 @@ var React = require('react'),
 
 
 var Calc = React.createClass({
+
+  // I like to use this mixin so that whatever is in an input at any point in time is recorded in state. Here, I'm using this mixin for the amount the user wants to covert.
   mixins: [LinkedStateMixin],
 
   getInitialState: function () {
     return {
-      rates: ExchangeStore.all(), amount: 0
+      rates: ExchangeStore.all(), amount: 0, from: "BTC", to: "BTC"
     };
   },
 
   componentDidMount: function () {
-    ApiUtil.fetchLocalRates();
-    var rates = ExchangeStore.all();
+    // First, let's fetch the most recent rates in the database.
+    var lastFetchDate = ApiUtil.fetchLocalRates();
 
-    if ( typeof rates["usd"] === "undefined" ) {
-      ApiUtil.fetchRates();
-    }
-    
-    // If rates are old, fetch new ones
+    // Add a listener to the store so we know when it changes. When it does change, we can rerender to have the newest store data on the page.
     this.storeListener = ExchangeStore.addListener(this.onChange);
   },
 
   onChange: function () {
     this.setState({ rates: ExchangeStore.all() });
+
+    // If rates are old or there are no rates in the database, fetch new ones.
+    if ( this.state.rates.length === 0 || this.outdatedFetch() ) {
+      ApiUtil.fetchRates();
+    }
+  },
+
+  outdatedFetch: function () {
+    // Math required to make sure we only fetch new exchange rates once a day.
+    var rateDate = new Date(this.state.rates[0].created_at);
+    var currentDate = new Date(Date.now());
+    var msecDiff = currentDate - rateDate;
+    var hoursDiff = Math.floor(msecDiff / 1000 / 60 / 60);
+
+    // Fetches updated currency exchange info if last entries in database we fetched longer than or equal to 24 hours ago.
+    return ( hoursDiff >= 24 ) ? true : false;
+    // return true;
   },
 
   componentWillUnmount: function () {
+
+    // When component unmounts, we remove the listener from the store. No need for it when the component is not around.
     this.storeListener.remove();
   },
 
+  onFromSelect: function (e) {
+
+    // User selects from currency.
+    this.setState({from: e.target.value});
+  },
+
+  onToSelect: function (e) {
+
+    // User selects to currency.
+    this.setState({to: e.target.value});
+  },
+
+  convert: function (e) {
+    e.preventDefault();
+    var fromCur = this.state.from,
+        toCur = this.state.to,
+        amount = parseFloat(this.state.amount),
+        fromRate = 1, toRate = 1, value;
+
+    // Iterate through each rate we have and set the local variables toRate and fromRate accordingly.
+    this.state.rates.forEach(function(rate) {
+      var currency = rate.currency;
+      if (currency === fromCur) {
+        fromRate = parseFloat(rate.rate);
+      } else if (currency === toCur) {
+        toRate = parseFloat(rate.rate);
+      }
+    });
+
+    // If to and from are equivalent, just return the original amount because no conversion is necessary.
+    if (fromCur === toCur) {
+      return this.setState({value: amount});
+    }
+
+    // I have to do this check because of the BTC API I used and because putting such a small fraction in the database with a precision constraint of 2 did not work well.
+    //
+    if (fromCur === "BTC") {
+        fromRate = 1 / fromRate;
+      }
+    if (toCur === "BTC") {
+      toRate = 1 / toRate;
+    }
+
+    // This is the meat of the entire function. Every exchange rate is in respect to USD, so we need to essentially convert it to USD using the first half of the equation, and then convert it into the desired 'to' currency.
+    var value = (amount * (1 / fromRate )) * (toRate);
+    this.setState({value: value});
+
+  },
+
+  switchSelected: function (e) {
+    e.preventDefault();
+    var fromCur = this.state.from,
+        toCur = this.state.to;
+
+    this.setState({to: fromCur, from: toCur});
+  },
+
+
   render: function () {
+    var value = this.state.value,
+        converted;
+
+    // If the user has converted something, let's render it.
+    if ( value ) {
+      converted = <div>{value}</div>;
+    }
+
     return (
       <div>
         <h1>Currency Calculator</h1>
-        <form className="" onSubmit={ this.submit }>
-          <div className="input">
-            <label className="">Amount to Convert</label>
-            <input
-              type="number"
-              valueLink={this.linkState('amount')} />
-              <button className="">Convert</button>
-          </div>
+        <form className="" onSubmit={ this.convert }>
+
+          <select name="from" onChange={this.onFromSelect}>
+            <option value="BTC">BTC</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="USD">USD</option>
+          </select>
+
+          <select name="to" onChange={this.onToSelect}>
+            <option value="BTC">BTC</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="USD">USD</option>
+          </select>
+
+
+          <label className="">Amount to Convert </label>
+          <input
+            type="text"
+            valueLink={this.linkState('amount')} />
+          <button className="">Convert</button>
         </form>
+        {converted}
       </div>
     );
   }
@@ -59,3 +157,5 @@ window.init = function () {
   var root = document.getElementById('root');
   ReactDOM.render(<Calc/>, root);
 };
+
+// <button onClick={this.switchSelected}>Switch</button>

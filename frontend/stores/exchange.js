@@ -3,7 +3,7 @@ var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher/dispatcher'),
     ExchangeConstants = require('../constants/exchange');
 
-var _exchangeRates = {},
+var _exchangeRates = [],
     _exchangeRatesIdx = {};
 
 var ExchangeStore = new Store(AppDispatcher);
@@ -14,10 +14,11 @@ var resetRates = function (rates) {
   rates.forEach(function(rate) {
     _exchangeRatesIdx[rate.id] = rate;
   });
+
 };
 
 ExchangeStore.all = function () {
-  return $.extend({}, _exchangeRates);
+  return _exchangeRates.slice();
 };
 
 ExchangeStore.find = function (id) {
@@ -28,7 +29,7 @@ ExchangeStore.__onDispatch = function (payload) {
   switch(payload.actionType) {
     case ExchangeConstants.RATES_RECEIVED:
       resetRates(payload.rates);
-      AccountStore.__emitChange();
+      ExchangeStore.__emitChange();
       break;
   }
 };

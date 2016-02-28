@@ -7,8 +7,9 @@ var ApiUtil = {
     type: "post",
     url: "/api/exchange_rates",
     dataType: "json",
-    data: { rate: rate },
+    data: { exchange_rate: rate },
     success: function (rates) {
+      var rates = [rates]
       ApiActions.receiveRates(rates);
     }
   });
@@ -26,6 +27,7 @@ fetchLocalRates: function () {
 },
 
  fetchRates: function () {
+
    $.ajax({
     type: "get",
     url: "https://api.bitcoinaverage.com/exchanges/USD",
@@ -33,7 +35,7 @@ fetchLocalRates: function () {
     success: function (rate) {
       var rate = {
         currency: "BTC",
-        rate: rate.coinbase.rates.last,
+        rate:  rate.bitex.rates.last,
         date: rate.timestamp
       };
       ApiUtil.createRate(rate);
