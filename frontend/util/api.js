@@ -56,8 +56,8 @@ fetchLocalRates: function () {
 
    $.ajax({
     type: "get",
-    url: "https://api.fixer.io/latest?base=USD",
-    dataType: "json",
+    url: "https://api.fixer.io/latest?base=USD&callback=?",
+    dataType: "jsonp",
     success: function (rates) {
       var date = rates.date;
 
