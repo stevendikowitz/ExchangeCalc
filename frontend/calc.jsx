@@ -18,17 +18,16 @@ var Calc = React.createClass({
 
   componentDidMount: function () {
     // First, let's fetch the most recent rates in the database.
-    var lastFetchDate = ApiUtil.fetchLocalRates();
+    ApiUtil.fetchLocalRates();
 
     // Add a listener to the store so we know when it changes. When it does change, we can rerender to have the newest store data on the page.
     this.storeListener = ExchangeStore.addListener(this.onChange);
   },
 
   onChange: function () {
-    this.setState({ rates: ExchangeStore.all() });
-
+    this.state.rates = ExchangeStore.all();
     // If rates are old or there are no rates in the database, fetch new ones.
-    if ( this.state.rates.length === 0 || this.outdatedFetch() ) {
+    if ( this.state.rates.length < 3 || this.outdatedFetch() ) {
       ApiUtil.fetchRates();
     }
   },

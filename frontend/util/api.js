@@ -1,5 +1,7 @@
 var ApiActions = require('../actions/api');
 
+
+var _rates = [];
 var ApiUtil = {
   // The ApiUtil handles all our API requests. In success, we pass the data we pass data to our ApiActions which then tells our Dispatcher to do something with the data.
 
@@ -10,10 +12,14 @@ var ApiUtil = {
     dataType: "json",
     data: { exchange_rate: rate },
     success: function (rate) {
-      // Here I'm wrapping this rate in brackets so I can use forEach on it later.
-      var rate = [rate];
+      // Here I'm pushing the rates into the _rates array.
+      _rates.push(rate);
 
-      ApiActions.receiveRates(rate);
+      // I need to wait until all three currency rates are fetched (no need to fetch USD since every other rate is in relation to USD) before adding them to the store. The reason is that the listener will see  tell the component that something has changed in the store each time a new rate is entered but this causes problems because it would tell ApiUtil to fire off a new ajax request while its in the process of firing one.
+      if (_rates.length === 3) {
+        ApiActions.receiveRates(_rates);
+        _rates = [];
+      }
     }
   });
 },
