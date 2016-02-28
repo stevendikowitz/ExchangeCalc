@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20160228000642) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "exchange_rates", force: :cascade do |t|
     t.datetime "date",                               null: false
     t.decimal  "rate",       precision: 8, scale: 2, null: false
@@ -21,6 +24,6 @@ ActiveRecord::Schema.define(version: 20160228000642) do
     t.datetime "updated_at"
   end
 
-  add_index "exchange_rates", ["currency"], name: "index_exchange_rates_on_currency"
+  add_index "exchange_rates", ["currency"], name: "index_exchange_rates_on_currency", using: :btree
 
 end
