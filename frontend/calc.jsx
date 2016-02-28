@@ -120,7 +120,14 @@ var Calc = React.createClass({
 
     return (
       <div>
-        <h1>Currency Calculator</h1>
+        <header className="header">
+          <div className="header-nav">
+            <h1 className="">Currency Calculator</h1>
+            <a href="#" target="_blank">GitHub Repo</a>
+            
+            <a href="#" target="_blank">stevendikowitz.com</a>
+          </div>
+        </header>
         <form className="" onSubmit={ this.convert }>
 
           <select name="from" onChange={this.onFromSelect}>
