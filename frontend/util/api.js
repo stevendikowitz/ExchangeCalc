@@ -1,6 +1,7 @@
 var ApiActions = require('../actions/api');
 
 var ApiUtil = {
+  // The ApiUtil handles all our API requests. In success, we pass the data we pass data to our ApiActions which then tells our Dispatcher to do something with the data.
 
  createRate: function (rate) {
    $.ajax({
@@ -8,9 +9,11 @@ var ApiUtil = {
     url: "/api/exchange_rates",
     dataType: "json",
     data: { exchange_rate: rate },
-    success: function (rates) {
-      var rates = [rates]
-      ApiActions.receiveRates(rates);
+    success: function (rate) {
+      // Here I'm wrapping this rate in brackets so I can use forEach on it later.
+      var rate = [rate];
+
+      ApiActions.receiveRates(rate);
     }
   });
 },
@@ -38,6 +41,9 @@ fetchLocalRates: function () {
         rate:  rate.bitex.rates.last,
         date: rate.timestamp
       };
+
+    // Didn't know where to get BTC and the other currency exchange rates in one place, so I have to make ajax requests to two different APIs.
+
       ApiUtil.createRate(rate);
     }
   });
@@ -60,6 +66,8 @@ fetchLocalRates: function () {
         currency: "GBP",
         rate: rates.rates.GBP
       };
+
+      // We just fetched a bunch of rates from this API but we only care about EUR, GBP. So instead of posting all of this extra data unecessarily to our databse, we can pull out just the EUR and GBP rates and make a post request for them.
 
       ApiUtil.createRate(eur);
       ApiUtil.createRate(gbp);
