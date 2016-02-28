@@ -82,7 +82,7 @@ var Calc = React.createClass({
 
     // If to and from are equivalent, just return the original amount because no conversion is necessary.
     if (fromCur === toCur) {
-      return this.setState({value: amount});
+      return this.setState({value: amount, type: toCur});
     }
 
     // I have to do this check because of the BTC API I used and because putting such a small fraction in the database with a precision constraint of 2 did not work well.
@@ -96,7 +96,7 @@ var Calc = React.createClass({
 
     // This is the meat of the entire function. Every exchange rate is in respect to USD, so we need to essentially convert it to USD using the first half of the equation, and then convert it into the desired 'to' currency.
     var value = (amount * (1 / fromRate )) * (toRate);
-    this.setState({value: value});
+    this.setState({value: value, type: toCur});
 
   },
 
@@ -108,6 +108,16 @@ var Calc = React.createClass({
     this.setState({to: fromCur, from: toCur});
   },
 
+  currencyType: function () {
+    var type = this.state.type;
+
+    // I'm cheating here and using the unicode character for Thai Baht because Bitcoin doesn't have an official one yet.
+    if (type === "EUR") return <span>&#8364; </span>;
+    else if (type === "GBP") return <span>&#163; </span>;
+    else if (type === "BTC") return <span>&#3647; </span>;
+    else if (type === "USD") return <span>$ </span>;
+  },
+
 
   render: function () {
     var value = this.state.value,
@@ -115,43 +125,62 @@ var Calc = React.createClass({
 
     // If the user has converted something, let's render it.
     if ( value ) {
-      converted = <div>{value}</div>;
+      var type = this.currencyType();
+      converted = <div className="currency">{type} {value}</div>;
     }
 
     return (
       <div>
         <header className="header">
-          <div className="header-nav">
             <h1 className="">Currency Calculator</h1>
-            <a href="#" target="_blank">GitHub Repo</a>
-            
-            <a href="#" target="_blank">stevendikowitz.com</a>
-          </div>
+            <ul className="links group">
+              <li>
+                <a
+                  href="https://github.com/stevendikowitz/ExchangeCalc"
+                  target="_blank">
+                  GitHub Repo
+                </a>
+              </li>
+              <li>
+                <a href="http://stevendikowitz.com/" target="_blank">stevendikowitz.com</a>
+              </li>
+            </ul>
         </header>
-        <form className="" onSubmit={ this.convert }>
 
-          <select name="from" onChange={this.onFromSelect}>
-            <option value="BTC">BTC</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="USD">USD</option>
-          </select>
+        <section className="content">
+          <form className="" onSubmit={ this.convert }>
+            <div className="input-field group">
+              <div className="input">
+                <label>From</label>
+                <select onChange={this.onFromSelect}>
+                  <option value="BTC">BTC</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="USD">USD</option>
+                </select>
+                </div>
 
-          <select name="to" onChange={this.onToSelect}>
-            <option value="BTC">BTC</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="USD">USD</option>
-          </select>
+                <div className="input">
+                <label>To</label>
+                <select onChange={this.onToSelect}>
+                  <option value="BTC">BTC</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
 
-
-          <label className="">Amount to Convert </label>
-          <input
-            type="text"
-            valueLink={this.linkState('amount')} />
-          <button className="">Convert</button>
-        </form>
+              <div className="input">
+                <label className="">Amount to Convert</label>
+                <input
+                  type="text"
+                  valueLink={this.linkState('amount')} />
+              </div>
+            </div>
+            <button className="submit">convert</button>
+          </form>
         {converted}
+        </section>
       </div>
     );
   }
