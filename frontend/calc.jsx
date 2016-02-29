@@ -71,6 +71,9 @@ var Calc = React.createClass({
 
     // No NaNs on my watch!
     if (this.state.amount === "") amount = 0;
+    if (this.state.amount % 1 !== 0) {
+      return this.setState({value: "Not a valid amount Please enter a number.", amount: "", type: null});
+    }
 
     // Iterate through each rate we have and set the local variables toRate and fromRate accordingly.
     this.state.rates.forEach(function(rate) {
@@ -104,6 +107,7 @@ var Calc = React.createClass({
 
   currencyType: function () {
     var type = this.state.type;
+    if (!type) return;
 
     // I'm cheating here and using the unicode character for Thai Baht because Bitcoin doesn't have an official one yet.
     if (type === "EUR") return <span>&#8364; </span>;
