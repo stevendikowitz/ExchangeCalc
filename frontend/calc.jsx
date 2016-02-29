@@ -72,7 +72,7 @@ var Calc = React.createClass({
     // No NaNs on my watch!
     if (this.state.amount === "") amount = 0;
     if (this.state.amount % 1 !== 0) {
-      return this.setState({value: "Not a valid amount Please enter a number.", amount: "", type: null});
+      return this.setState({value: "Not a valid amount. Please enter a number.", amount: "", type: null});
     }
 
     // Iterate through each rate we have and set the local variables toRate and fromRate accordingly.
