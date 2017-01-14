@@ -1,0 +1,12 @@
+{
+  "extends": ["standard", "standard-react"],
+  "globals": {
+    "__DEV__": true
+  },
+  "rules": {
+    "no-console": ["error"],
+    "no-use-before-define": ["error", { "functions": true, "classes": true }],
+    "no-var": ["error"],
+    "react/jsx-no-bind": ["error", { "ignoreRefs": true }]
+  }
+}

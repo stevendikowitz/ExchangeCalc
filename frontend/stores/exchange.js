@@ -3,13 +3,13 @@ var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher/dispatcher'),
     ExchangeConstants = require('../constants/exchange');
 
-var _exchangeRates = [],
-    _exchangeRatesIdx = {},
-    ExchangeStore = new Store(AppDispatcher);
+const _exchangeRates = []
+const _exchangeRatesIdx = {}
+export const ExchangeStore = new Store(AppDispatcher);
 
 var resetRates = function (rates) {
-  _exchangeRates = rates;
-  _exchangeRatesIdx = {};
+  const _exchangeRates = rates;
+  const _exchangeRatesIdx = {};
   rates.forEach(function(rate) {
     _exchangeRatesIdx[rate.id] = rate;
   });
