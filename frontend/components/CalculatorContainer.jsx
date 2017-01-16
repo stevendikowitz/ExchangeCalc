@@ -5,9 +5,10 @@ import Calculator from './Calculator'
 import {
   fetchLocalRates,
   fetchNewRates
-} from './actions'
+} from '../actions'
 
 const mapStateToProps = (state, ownProps) => {
+  debugger
   return Object.assign({}, ownProps, {
     rates: state.getIn(['rates']).toJS(),
     amount: state.getIn(['amount']).toJS(),
@@ -24,6 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     onFetchLocalRates: () => {
+      debugger
       dispatch(fetchLocalRates())
     }
   }

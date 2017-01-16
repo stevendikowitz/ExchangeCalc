@@ -3,8 +3,8 @@ import Immutable from 'immutable'
 const initialState = {
   rates: [],
   amount: '',
-  from: 'BTC',
-  to: 'BTC',
+  from: 'USD',
+  to: 'USD',
   value: ''
 }
 

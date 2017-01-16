@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title>ExchangeCalc</title>
+    <link rel="stylesheet" href="/css/form.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+</head>
+<body>
+<div>
+    <div id="root">
+        <div id="dev-env-loader" style="color: #999; display: none; font-weight: bold; padding: 2em; text-align: center">
+            <i>( ... development environment loading ... )</i>
+        </div>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+<script type="text/javascript">
+  setTimeout(function () {
+    var el = window.document.getElementById('dev-env-loader')
+
+    if (el) el.style.display = 'block'
+  }, 500)
+
+  ExchangeCalc()
+</script>
+</body>
+</html>

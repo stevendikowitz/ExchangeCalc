@@ -1,4 +1,4 @@
-import * as types from './constants/exchange'
+import * as types from './constants'
 import $ from 'jquery'
 
 export function receiveError (data) {
@@ -26,16 +26,29 @@ export function receiveNewRates (data) {
   }
 }
 
+export function createRate (exchange_rate) {
+  return (dispatch, getState) => {
+    $.ajax({
+      type: 'POST',
+      url: '/api/exchange_rates',
+      dataType: 'json',
+      data: {exchange_rate},
+      success: (data) => {
+        dispatch(receiveNewRates(data))
+      }
+    })
+  }
+}
+
 export function fetchLocalRates () {
   return (dispatch, getState) => {
+    debuggers
     dispatch(types.REQUEST_LOCAL_RATES)
     // add api key in params
     $.ajax({
-      method: 'GET',
-      url: '',
+      type: 'GET',
+      url: '/api/exchange_rates',
       dataType: 'json',
-      data: JSON.stringify(member),
-      contentType: 'application/json; charset=utf-8',
       success: (data) => {
         dispatch(receiveLocalRates(data))
       },
@@ -59,12 +72,11 @@ export function fetchNewRates () {
     dispatch(types.REQUEST_NEW_RATES)
 
     $.ajax({
-      method: 'get',
-      url: '',
-      dataType: 'json',
-      contentType: 'application/json; charset=utf-8',
+      type: 'get',
+      url: 'https://api.fixer.io/latest?base=USD&callback=?',
+      dataType: 'jsonp',
       success: (data) => {
-        dispatch(receiveNewRates(data))
+        dispatch(createRate(data))
       },
       error: (data) => {
         dispatch(receiveError(data))

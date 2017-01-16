@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 
-import * as types from './constants/exchange'
+import * as types from './constants'
 import initialState from './initialState'
 
 export function reducer (state = initialState, action) {

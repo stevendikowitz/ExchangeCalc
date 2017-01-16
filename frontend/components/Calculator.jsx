@@ -1,8 +1,9 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+// import ReactDOM from 'react-dom'
 
 class Calculator extends React.Component {
   componentDidMount () {
+    debugger
     this.props.onFetchLocalRates()
   }
 
@@ -34,20 +35,20 @@ class Calculator extends React.Component {
 
   convert (e) {
     e.preventDefault()
-    const fromCur = this.state.from
-    const toCur = this.state.to
-    let amount = parseFloat(this.state.amount) || 0
-    const fromRate = 1
-    const toRate = 1
+    const fromCur = this.props.from
+    const toCur = this.props.to
+    let amount = parseFloat(this.props.amount) || 0
+    let fromRate = 1
+    let toRate = 1
     let value
 
     // No NaNs on my watch!
-    if (this.state.amount % 1 !== 0) {
+    if (this.props.amount % 1 !== 0) {
       return this.setState({value: 'Not a valid amount. Please enter a number.', amount: '', type: null});
     }
   
     // Iterate through each rate we have and set the local variables toRate and fromRate accordingly.
-    this.state.rates.forEach((rate) => {
+    this.props.rates.forEach((rate) => {
       const currency = rate.currency
       
       if (currency === fromCur) {
@@ -62,14 +63,6 @@ class Calculator extends React.Component {
       return this.setState({value: amount.toFixed(2), type: toCur})
     }
   
-    // I have to do this check because of the BTC API I used and because putting such a small fraction in the database with a precision constraint of 2 did not work well.
-    if (fromCur === 'BTC') {
-      fromRate = 1 / fromRate;
-    }
-    if (toCur === 'BTC') {
-      toRate = 1 / toRate;
-    }
-  
     // This is the meat of the entire function. Every exchange rate is in respect to USD, so we need to essentially convert it to USD using the first half of the equation, and then convert it into the desired 'to' currency.
     value = (amount * (1 / fromRate )) * (toRate);
     this.setState({value: value.toFixed(2), type: toCur});
@@ -79,15 +72,13 @@ class Calculator extends React.Component {
     const type = this.state.type
     if (!type) return
 
-    // I'm cheating here and using the unicode character for Thai Baht because Bitcoin doesn't have an official one yet.
     if (type === 'EUR') return <span>&#8364; </span>
     else if (type === 'GBP') return <span>&#163; </span>
-    else if (type === 'BTC') return <span>&#3647; </span>
     else if (type === 'USD') return <span>$ </span>
   }
 
   render () {
-    const value = this.state.value
+    const value = this.props.value || 0
     let converted
 
     // If the user has converted something, let's render it.
@@ -120,7 +111,6 @@ class Calculator extends React.Component {
               <div className='input'>
                 <label>From</label>
                 <select onChange={this.onFromSelect}>
-                  <option value='BTC'>BTC</option>
                   <option value='EUR'>EUR</option>
                   <option value='GBP'>GBP</option>
                   <option value='USD'>USD</option>
@@ -130,7 +120,6 @@ class Calculator extends React.Component {
               <div className='input'>
                 <label>To</label>
                 <select onChange={this.onToSelect}>
-                  <option value='BTC'>BTC</option>
                   <option value='EUR'>EUR</option>
                   <option value='GBP'>GBP</option>
                   <option value='USD'>USD</option>
@@ -142,7 +131,7 @@ class Calculator extends React.Component {
                 <input
                   type='text'
                   placeholder='Enter amount'
-                  valueLink={this.linkState('amount')} />
+                  value={this.props.amount || 0} />
               </div>
             </div>
             <button className='submit'>convert</button>
@@ -160,8 +149,4 @@ Calculator.propTypes = {
   onFetchNewRates: React.PropTypes.func
 }
 
-
-window.init = function () {
-  var root = document.getElementById('root');
-  ReactDOM.render(<Calculator/>, root);
-};
+export default Calculator
