@@ -4,8 +4,10 @@ module.exports = {
   context: __dirname,
   entry: "./frontend/index.jsx",
   output: {
-    path: path.join(__dirname, 'app', 'assets', 'javascripts'),
-    filename: "bundle.js"
+    path: path.join(__dirname, '/dist'),
+    filename: 'app.js',
+    library: 'ExchangeCalc',
+    libraryTarget: 'umd'
   },
   resolve: {
     extensions: ["", ".js", ".jsx"]
