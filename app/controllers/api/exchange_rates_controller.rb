@@ -28,9 +28,8 @@ class Api::ExchangeRatesController < ApplicationController
   def exchange_rate_params
     # We only allow permitted parameters to be posted to the database to make sure no hackers try any funny business.
     params.require(:exchange_rate).permit(
-      :rate,
+      :rates,
       :date,
-      :currency,
       :created_at
     )
   end

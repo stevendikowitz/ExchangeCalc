@@ -3,11 +3,10 @@ import React from 'react'
 
 class Calculator extends React.Component {
   componentDidMount () {
-    debugger
     this.props.onFetchLocalRates()
   }
 
-  onChange () {
+  componentWillReceiveProps () {
     if (this.props.rates.length < 3 || this.outdatedFetch()) {
       this.props.onFetchNewRates()
     }
@@ -44,13 +43,11 @@ class Calculator extends React.Component {
 
     // No NaNs on my watch!
     if (this.props.amount % 1 !== 0) {
-      return this.setState({value: 'Not a valid amount. Please enter a number.', amount: '', type: null});
+      return this.setState({value: 'Not a valid amount. Please enter a number.', amount: '', type: null})
     }
-  
     // Iterate through each rate we have and set the local variables toRate and fromRate accordingly.
     this.props.rates.forEach((rate) => {
       const currency = rate.currency
-      
       if (currency === fromCur) {
         fromRate = parseFloat(rate.rate)
       } else if (currency === toCur) {
@@ -62,10 +59,9 @@ class Calculator extends React.Component {
     if (fromCur === toCur) {
       return this.setState({value: amount.toFixed(2), type: toCur})
     }
-  
     // This is the meat of the entire function. Every exchange rate is in respect to USD, so we need to essentially convert it to USD using the first half of the equation, and then convert it into the desired 'to' currency.
-    value = (amount * (1 / fromRate )) * (toRate);
-    this.setState({value: value.toFixed(2), type: toCur});
+    value = (amount * (1 / fromRate)) * (toRate)
+    this.setState({value: value.toFixed(2), type: toCur})
   }
 
   currencyType () {
@@ -82,9 +78,9 @@ class Calculator extends React.Component {
     let converted
 
     // If the user has converted something, let's render it.
-    if ( value ) {
-      const type = this.currencyType();
-      converted = <div className='currency'>{type} {value}</div>;
+    if (value) {
+      const type = this.currencyType()
+      converted = <div className='currency'>{type} {value}</div>
     }
 
     return (
@@ -106,7 +102,7 @@ class Calculator extends React.Component {
         </header>
 
         <section className='content'>
-          <form className='' onSubmit={ this.convert }>
+          <form className='' onSubmit={this.convert}>
             <div className='input-field group'>
               <div className='input'>
                 <label>From</label>
@@ -145,6 +141,10 @@ class Calculator extends React.Component {
 
 Calculator.propTypes = {
   rates: React.PropTypes.array,
+  from: React.PropTypes.string,
+  amount: React.PropTypes.string,
+  value: React.PropTypes.string,
+  to: React.PropTypes.string,
   onFetchLocalRates: React.PropTypes.func,
   onFetchNewRates: React.PropTypes.func
 }

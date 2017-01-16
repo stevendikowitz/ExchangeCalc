@@ -10,6 +10,7 @@ export function reducer (state = initialState, action) {
 
       break
     case types.RECEIVE_LOCAL_RATES:
+      debugger
       state = state.setIn(['rates'], Immutable.fromJS(action.data))
 
       break
@@ -20,5 +21,5 @@ export function reducer (state = initialState, action) {
     default:
   }
 
-  return reducer
+  return state
 }
