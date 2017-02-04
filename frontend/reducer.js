@@ -6,17 +6,23 @@ import initialState from './initialState'
 export function reducer (state = initialState, action) {
   switch (action.type) {
     case types.RECEIVE_NEW_RATES:
-      state = state.setIn(['rates'], Immutable.fromJS(action.data))
+      state = state.withMutations((state) => {
+        state
+          .setIn(['rates'], Immutable.fromJS(action.data.rates))
+          .setIn(['lastFetch'], Immutable.fromJS(action.data.date))
+      })
 
       break
     case types.RECEIVE_LOCAL_RATES:
-      debugger
-      state = state.setIn(['rates'], Immutable.fromJS(action.data))
+      state = state.withMutations((state) => {
+        state
+          .setIn(['rates'], Immutable.fromJS(action.data.rates))
+          .setIn(['lastFetch'], Immutable.fromJS(action.data.date))
+      })
 
       break
     case types.RECEIVE_UPDATE_VALUE:
-      // state = state.setIn(['notifications'], Immutable.fromJS({class: types.ERROR_CLASS, message: 'Updating your information, one moment please...'}))
-
+      state = state.setIn([action.id], action.value)
       break
     default:
   }

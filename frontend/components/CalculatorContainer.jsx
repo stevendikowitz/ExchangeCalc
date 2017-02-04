@@ -4,13 +4,23 @@ import { connect } from 'react-redux'
 import Calculator from './Calculator'
 import {
   fetchLocalRates,
-  fetchNewRates
+  fetchNewRates,
+  updateValue
 } from '../actions'
 
 const mapStateToProps = (state, ownProps) => {
-  debugger
+  const rates = state.getIn(['rates']).toJS()
+  const options = Object.keys(rates).map((rate) => {
+    return {
+      label: rate,
+      value: rate
+    }
+  }).sort((a, b) => a.value.localeCompare(b.value))
+
   return Object.assign({}, ownProps, {
-    rates: state.getIn(['rates']).toJS() ,
+    rates,
+    options,
+    lastFetch: state.getIn(['lastFetch']),
     amount: state.getIn(['amount']),
     to: state.getIn(['to']),
     from: state.getIn(['from']),
@@ -21,12 +31,15 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onFetchNewRates: () => {
-      debugger
       dispatch(fetchNewRates())
     },
 
     onFetchLocalRates: () => {
       dispatch(fetchLocalRates())
+    },
+
+    onUpdateValue: (id, value) => {
+      dispatch(updateValue(id, value))
     }
   }
 }

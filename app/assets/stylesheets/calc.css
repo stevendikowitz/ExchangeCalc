@@ -59,23 +59,24 @@ button:hover {
   font-weight: 600;
   display: block;
   margin-bottom: 5px;
-  text-transform: uppercase; }
+  text-transform: uppercase;
+}
 
 label {
   display: block; }
 
-.input > input {
-  border-radius: 3px;
-  background: #fff;
-  border: 1px solid #d8d8d8;
-  padding: 8px;
-  width: 300px;
-  color: black;
-  font-size: 14px;
-  margin-bottom: 10px; }
+/*.input > input {*/
+  /*border-radius: 3px;*/
+  /*background: #fff;*/
+  /*border: 1px solid #d8d8d8;*/
+  /*padding: 8px;*/
+  /*width: 300px;*/
+  /*color: black;*/
+  /*font-size: 14px;*/
+  /*margin-bottom: 10px; }*/
 
 button {
-  width: 700px; }
+  width: 615x; }
 
 .submit {
   font-size: 14px;
@@ -94,4 +95,4 @@ button {
   font-weight: 600;
   font-size: 26px; }
 
-/*# sourceMappingURL=calc.css.map */
+/*# sourceMappingURL=calcs.css.map */

@@ -13,19 +13,30 @@ export function receiveError (data) {
 }
 
 export function requestLocalRates () {
+  if (__DEV__) {
+    console.debug('[ACTION] requestLocalRates')  // eslint-disable-line
+  }
+
   return {
     type: types.REQUEST_LOCAL_RATES
   }
 }
 
 export function requestNewRates () {
+  if (__DEV__) {
+    console.debug('[ACTION] requestNewRates')  // eslint-disable-line
+  }
+
   return {
     type: types.REQUEST_NEW_RATES
   }
 }
 
-
 export function receiveLocalRates (data) {
+  if (__DEV__) {
+    console.debug('[ACTION] receiveLocalRates', data)  // eslint-disable-line
+  }
+
   return {
     type: types.RECEIVE_LOCAL_RATES,
     data
@@ -33,6 +44,10 @@ export function receiveLocalRates (data) {
 }
 
 export function receiveNewRates (data) {
+  if (__DEV__) {
+    console.debug('[ACTION] receiveNewRates', data)  // eslint-disable-line
+  }
+
   return {
     type: types.RECEIVE_NEW_RATES,
     data
@@ -47,11 +62,11 @@ export function createRate (exchangeRates) {
       dataType: 'json',
       data: {exchangeRates},
       success: (data) => {
-        debugger
+        data.rates.USD = '1.00'
         dispatch(receiveNewRates(data))
       },
       error: (data) => {
-        debugger
+        dispatch(receiveError(data))
       }
     })
   }
@@ -59,30 +74,27 @@ export function createRate (exchangeRates) {
 
 export function fetchLocalRates () {
   return (dispatch, getState) => {
-
     dispatch(requestLocalRates())
 
-    // add api key in params
     $.ajax({
       type: 'GET',
       url: '/api/exchange_rates',
       dataType: 'json',
       success: (data) => {
-        debugger
+        data.rates.USD = '1.00'
         dispatch(receiveLocalRates(data))
       },
       error: (data) => {
-        debugger
         dispatch(receiveError(data))
       }
     })
   }
 }
 
-export function updateValue (target, value) {
+export function updateValue (id, value) {
   return {
     type: types.RECEIVE_UPDATE_VALUE,
-    target,
+    id,
     value
   }
 }
@@ -96,7 +108,11 @@ export function fetchNewRates () {
       url: 'https://api.fixer.io/latest?base=USD&callback=?',
       dataType: 'jsonp',
       success: (data) => {
-        dispatch(createRate(data))
+        const exchangeRates = Object.assign({}, data.rates, {
+          date: data.date
+        })
+
+        dispatch(createRate(exchangeRates))
       },
       error: (data) => {
         dispatch(receiveError(data))

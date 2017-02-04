@@ -1,10 +1,11 @@
 import Immutable from 'immutable'
 
 const initialState = {
-  rates: [],
+  lastFetch: '',
+  rates: {},
   amount: '',
-  from: 'USD',
-  to: 'USD',
+  from: '',
+  to: '',
   value: ''
 }
 
