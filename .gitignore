@@ -25,3 +25,4 @@ public/dist/
 
 .byebug_history
 npm-debug.log
+public/.DS_Store
