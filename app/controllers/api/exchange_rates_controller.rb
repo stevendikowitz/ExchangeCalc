@@ -10,14 +10,13 @@ class Api::ExchangeRatesController < ApplicationController
     @rates = ExchangeRate.new(exchange_rate_params)
     # If the rate is able to save to the database (it meets the validations we set on it) we render the show view. Else, we can catch the errors.
     if @rates.save
-      render :show
+      render :index
     else
       render json: {errors: @user.errors.full_messages}.to_json, status: 422
     end
   end
 
   def show
-
     # Turns out I didn't need this method.
     @rate = ExchangeRate.find(params[:id])
     render :show
