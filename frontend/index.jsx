@@ -8,7 +8,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { reducer } from '../frontend/reducer'
 import CalculatorContainer from './components/CalculatorContainer'
 
-function ExchangeCalc (props = {}, elementId = 'root') {
+function ExchangeCalculator (props = {}, elementId = 'root') {
   const element = document.getElementById(elementId)
 
   if (element instanceof HTMLElement) { // eslint-disable-line
@@ -34,4 +34,4 @@ function ExchangeCalc (props = {}, elementId = 'root') {
   }
 }
 
-module.exports = ExchangeCalc
+module.exports = ExchangeCalculator
