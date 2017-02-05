@@ -2,7 +2,7 @@
   "name": "ExchangeCalc",
   "version": "1.0.0",
   "description": "== README",
-  "main": "index.js",
+  "main": "public/dist/app.js",
   "directories": {
     "test": "test"
   },
