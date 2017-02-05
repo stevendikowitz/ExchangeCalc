@@ -1,16 +1,37 @@
-var path = require("path");
+const path = require('path')
+const NODE_ENV = process.env.NODE_ENV || 'development'
+const isProd = NODE_ENV === 'production'
+const webpack = require('webpack')
 
-module.exports = {
+const plugins = [
+  new webpack.DefinePlugin({
+    '__DEV__': JSON.stringify(!isProd)
+  })
+]
+
+const config = {
   context: __dirname,
-  entry: "./frontend/calc.jsx",
+  devtool: (NODE_ENV === 'development') ? 'source-map' : null,
+  entry: "./frontend/index",
   output: {
-    path: path.join(__dirname, 'app', 'assets', 'javascripts'),
-    filename: "bundle.js"
+    path: path.join(__dirname, 'public/dist'),
+    filename: 'app.js',
+    library: 'ExchangeCalculator',
+    libraryTarget: 'umd'
   },
+  plugins: plugins,
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+    extensions: ["", ".js", ".jsx", ".json"],
+    fallback: [path.join(__dirname, 'node_modules')]
   },
   module: {
+    preLoaders: [
+      {
+        test: /\.jsx?$/,
+        loader: 'eslint-loader',
+        exclude: /node_modules/
+      }
+    ],
     loaders: [
       {
         test: /\.jsx?$/,
@@ -26,4 +47,13 @@ module.exports = {
       }
     ]
   }
-};
+}
+
+if (isProd) {
+  config.plugins = plugins.concat([
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.DedupePlugin()
+  ])
+}
+
+module.exports = config
