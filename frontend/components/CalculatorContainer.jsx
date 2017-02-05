@@ -5,7 +5,8 @@ import Calculator from './Calculator'
 import {
   fetchLocalRates,
   fetchNewRates,
-  updateValue
+  updateValue,
+  clearNotification
 } from '../actions'
 
 const mapStateToProps = (state, ownProps) => {
@@ -24,7 +25,7 @@ const mapStateToProps = (state, ownProps) => {
     amount: state.getIn(['amount']),
     to: state.getIn(['to']),
     from: state.getIn(['from']),
-    value: state.getIn(['value'])
+    conversion: state.getIn(['conversion']).toJS()
   })
 }
 
@@ -38,8 +39,23 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchLocalRates())
     },
 
+    onConvert: (conversion) => {
+      dispatch(updateValue('conversion', conversion))
+      dispatch(clearNotification())
+    },
+
     onUpdateValue: (id, value) => {
       dispatch(updateValue(id, value))
+    },
+
+    onInvalidInput: (value = 'amount', amount = '') => {
+      const notification = {
+        message: `Not a valid ${value}. Please re-enter selection.`,
+        class: 'danger'
+      }
+
+      dispatch(updateValue('amount', amount))
+      dispatch(updateValue('notification', notification))
     }
   }
 }

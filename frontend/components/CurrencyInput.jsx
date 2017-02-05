@@ -1,8 +1,12 @@
 import React from 'react'
 import { FormattedNumber, IntlProvider } from 'react-intl'
+import { amountValid } from '../helper'
 
-function CurrencyInput ({ value, currency }) {
-  if (!value) return <div />
+function CurrencyInput ({ conversion }) {
+  const value = conversion.value
+  const currency = conversion.currency
+
+  if (!value || !amountValid(value) || !currency) return <div />
 
   return (
     <div className='currency'>
@@ -14,8 +18,7 @@ function CurrencyInput ({ value, currency }) {
 }
 
 CurrencyInput.propTypes = {
-  value: React.PropTypes.any,
-  currency: React.PropTypes.string
+  conversion: React.PropTypes.object
 }
 
 export default CurrencyInput

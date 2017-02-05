@@ -1,10 +1,12 @@
 import React from 'react'
 import Header from './Header'
 import InputSelect from './InputSelect'
-import { isInt, isFloat, convertAmount } from '../helper'
+import { amountValid, convertAmount, formatAmountForConversion } from '../helper'
 import { Button } from 'react-bootstrap'
 import InputField from './InputField'
 import CurrencyInput from './CurrencyInput'
+import moment from 'moment'
+import FlashNotificationContainer from './FlashNotificationContainer'
 
 class Calculator extends React.Component {
   constructor (props) {
@@ -14,29 +16,24 @@ class Calculator extends React.Component {
     this.updateAmount = this.updateAmount.bind(this)
     this.convert = this.convert.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
+    this.outdatedFetch = this.outdatedFetch.bind(this)
   }
   componentDidMount () {
     this.props.onFetchLocalRates()
   }
 
-  componentWillReceiveProps () {
-    if (this.outdatedFetch()) {
+  componentWillReceiveProps (newProps) {
+    if (this.outdatedFetch(newProps)) {
       this.props.onFetchNewRates()
     }
   }
 
-  amountValid (amount) {
-    return isFloat(amount) || isInt(amount)
-  }
-
-  outdatedFetch () {
-    const lastFetchDate = Date(this.props.lastFetch)
-    const currentDate = new Date(Date.now())
-    const msecDiff = currentDate - lastFetchDate
-    const hoursDiff = Math.floor(msecDiff / 1000 / 60 / 60)
+  outdatedFetch (newProps) {
+    const lastFetch = moment(newProps.lastFetch)
+    const currentDate = moment()
 
     // Fetches updated currency exchange info if last entries in database we fetched longer than or equal to 24 hours ago.
-    return !lastFetchDate || hoursDiff >= 24
+    return !lastFetch || currentDate.diff(lastFetch, 'hours') >= 24
   }
 
   // User selects to or from currency.
@@ -56,17 +53,16 @@ class Calculator extends React.Component {
 
   convert () {
     const rates = this.props.rates
-    const amount = parseFloat(this.props.amount)
+    const amount = formatAmountForConversion(this.props.amount)
     const fromRate = rates[this.props.from]
     const toRate = rates[this.props.to]
 
-    // No NaNs on my watch!
-    if (!this.amountValid(amount)) {
-      this.props.onUpdateValue('amount', '')
-      return this.props.onUpdateValue('value', 'Not a valid amount. Please enter a number.')
-    }
+    // No NaNs
+    if (!amountValid(amount)) return this.props.onInvalidInput()
+    if (!fromRate) return this.props.onInvalidInput('FROM currency', this.props.amount)
+    if (!toRate) return this.props.onInvalidInput('TO currency', this.props.amount)
 
-    this.props.onUpdateValue('value', convertAmount(fromRate, toRate, amount))
+    this.props.onConvert({value: convertAmount(fromRate, toRate, amount), currency: this.props.to})
   }
 
   render () {
@@ -74,6 +70,9 @@ class Calculator extends React.Component {
       <div>
         <Header />
         <section className='content'>
+          {/* Displays flash notifications, if any */}
+          <FlashNotificationContainer />
+
           <div className='input-field group'>
             <InputSelect
               label='FROM'
@@ -104,7 +103,7 @@ class Calculator extends React.Component {
             bsStyle='primary'
             bsSize='large'
             onClick={this.convert}>CONVERT</Button>
-          <CurrencyInput value={this.props.value} currency={this.props.to} />
+          <CurrencyInput conversion={this.props.conversion} />
         </section>
       </div>
     )
@@ -117,9 +116,11 @@ Calculator.propTypes = {
   lastFetch: React.PropTypes.string,
   from: React.PropTypes.string,
   amount: React.PropTypes.any,
-  value: React.PropTypes.string,
+  conversion: React.PropTypes.object,
   to: React.PropTypes.string,
   onFetchLocalRates: React.PropTypes.func,
+  onConvert: React.PropTypes.func,
+  onInvalidInput: React.PropTypes.func,
   onUpdateValue: React.PropTypes.func,
   onFetchNewRates: React.PropTypes.func
 }

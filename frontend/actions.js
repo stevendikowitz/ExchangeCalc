@@ -32,6 +32,12 @@ export function requestNewRates () {
   }
 }
 
+export function clearNotification () {
+  return {
+    type: types.CLEAR_NOTIFICATION
+  }
+}
+
 export function receiveLocalRates (data) {
   if (__DEV__) {
     console.debug('[ACTION] receiveLocalRates', data)  // eslint-disable-line
@@ -109,7 +115,7 @@ export function fetchNewRates () {
       dataType: 'jsonp',
       success: (data) => {
         const exchangeRates = Object.assign({}, data.rates, {
-          date: data.date
+          date: new Date()
         })
 
         dispatch(createRate(exchangeRates))

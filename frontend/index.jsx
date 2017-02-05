@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
+import { composeWithDevTools } from 'redux-devtools-extension'
 
 import { reducer } from '../frontend/reducer'
 import CalculatorContainer from './components/CalculatorContainer'
@@ -13,7 +14,9 @@ function ExchangeCalc (props = {}, elementId = 'root') {
   if (element instanceof HTMLElement) { // eslint-disable-line
     const store = createStore(
       reducer,
-      applyMiddleware(thunk)
+      composeWithDevTools(
+        applyMiddleware(thunk)
+      )
     )
 
     if (__DEV__) {

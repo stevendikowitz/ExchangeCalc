@@ -1,12 +1,16 @@
 import Immutable from 'immutable'
 
 const initialState = {
-  lastFetch: '',
-  rates: {},
   amount: '',
+  conversion: {
+    value: '',
+    currency: ''
+  },
   from: '',
-  to: '',
-  value: ''
+  lastFetch: '',
+  notification: {},
+  rates: {},
+  to: ''
 }
 
 export default Immutable.fromJS(initialState)

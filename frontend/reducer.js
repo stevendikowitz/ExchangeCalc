@@ -22,7 +22,12 @@ export function reducer (state = initialState, action) {
 
       break
     case types.RECEIVE_UPDATE_VALUE:
-      state = state.setIn([action.id], action.value)
+      state = state.setIn([action.id], Immutable.fromJS(action.value))
+
+      break
+    case types.CLEAR_NOTIFICATION:
+      state = state.setIn(['notification'], Immutable.fromJS({}))
+
       break
     default:
   }
