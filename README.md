@@ -1,6 +1,6 @@
 # ExchangeCalc
 
-![exchangecalc]
+![exchangecalculator]
 
 [ExchangeCalc][live-site] is a mini currency exchange rate app I built using Ruby on Rails and React.
 
@@ -17,7 +17,7 @@ The front end is built completely in React.js and JavaScript and utilizes [Redux
 
 
 
-[exchangecalc]: ./app/assets/images/exchangecalculator.png
+[exchangecalculator]: ./app/assets/images/exchangecalculator.png
 [live-site]:https://exchangecalc.herokuapp.com
 [fixer]:http://fixer.io/
 [redux]: https://github.com/reactjs/redux
