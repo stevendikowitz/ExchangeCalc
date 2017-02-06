@@ -17,7 +17,7 @@ The front end is built completely in React.js and JavaScript and utilizes [Redux
 
 
 
-[exchangecalc]: ./app/assets/images/exchangecalc.png
+[exchangecalc]: ./app/assets/images/exchangecalculator.png
 [live-site]:https://exchangecalc.herokuapp.com
 [fixer]:http://fixer.io/
 [redux]: https://github.com/reactjs/redux
