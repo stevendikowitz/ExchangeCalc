@@ -13,7 +13,7 @@ Every 24 hours, ExchangeCalc fetches the current currency exchange rates and pos
 
 
 ### Front end
-The front end is built completely in React.js and JavaScript and utilizes Redux[redux] architecture.
+The front end is built completely in React.js and JavaScript and utilizes [Redux][redux] architecture.
 
 
 
